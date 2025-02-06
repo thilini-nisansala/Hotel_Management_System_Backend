@@ -47,3 +47,18 @@ export function deleteUsers(req, res) {
     message: "This is a DELETE request",
   });
 }
+
+
+export function loginUser(req,res) {
+   const credentials = req.body
+   User.findOne({email :credentials.email, password : credentials.password }).then(
+    (user)=>{
+      if(user ==null){
+        res.status(404).json({
+          message : "User not found"
+        })
+      }
+    }
+   )
+   
+}
