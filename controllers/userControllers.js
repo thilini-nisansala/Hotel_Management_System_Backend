@@ -76,7 +76,7 @@ export function loginUser(req,res) {
         res.json({
           message: "user found",
           user : user,
-          tokwn : token
+          token : token
         })
       }
     }
