@@ -2,6 +2,7 @@ import GalleryItem from "../models/gallaryItem.js"
 
 
 export function createGalleryItem(req,res){
+
   
   const user = req.user
 

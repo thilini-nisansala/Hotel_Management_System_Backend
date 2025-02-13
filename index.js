@@ -17,11 +17,14 @@ app.use((req,res,next)=>{
     if(token != null){
         Jwt.verify(token, "secret", (err,decoded)=>{
         if(err){
-            req.user = decoded
-            console.log(decoded)
+            req.user = decoded       
+            next()
+        }else{
             next()
         }
         })
+    }else{
+        next()
     }
 });
 

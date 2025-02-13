@@ -1,85 +1,79 @@
 import User from '../models/user.js';
-import Jwt  from 'jsonwebtoken';
-
-
+import Jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
 // Get Users
 export function getUsers(req, res) {
- 
-    User.find().then(
-        (usersList)=>{
-            res.json({
-                list : usersList
-            })
-
-        }
-    )
+    User.find().then(usersList => {
+        res.json({ list: usersList });
+    });
 }
 
 // Post Users (Create a New User)
 export function postUsers(req, res) {
-  const userData = req.body;
+    const userData = req.body;
 
-  const newUser = new User(userData);
-  newUser
-    .save()
-    .then(() => {
-      res.status(201).json({
-        message: "User created successfully",
-      });
-    })
-    .catch((err) => {
-      res.status(500).json({
-        message: "User creation failed",
-        error: err.message,
-      });
-    });
+    // Hash the password and store it in userData
+    userData.password = bcrypt.hashSync(userData.password, 10);
+
+    const newUser = new User(userData);
+    newUser
+        .save()
+        .then(() => {
+            res.status(201).json({ message: "User created successfully" });
+        })
+        .catch(err => {
+            res.status(500).json({
+                message: "User creation failed",
+                error: err.message,
+            });
+        });
 }
 
 // Update Users
 export function putUsers(req, res) {
-  res.json({
-    message: "This is a PUT request",
-  });
+    res.json({ message: "This is a PUT request" });
 }
 
 // Delete Users
 export function deleteUsers(req, res) {
-  res.json({
-    message: "This is a DELETE request",
-  });
+    res.json({ message: "This is a DELETE request" });
 }
 
+// Login User
+export function loginUser(req, res) {
+    const { email, password } = req.body;
 
-export function loginUser(req,res) {
-   const credentials = req.body
+    User.findOne({ email }).then(user => {
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
 
-   User.findOne({email : credentials.email, password : credentials.password }).then(
-    (user)=>{
-      if(user ==null){
-        res.status(404).json({
-          message : "User not found"
-        })
-      }else{
+        // Compare the provided password with the hashed password stored in DB
+        const isMatch = bcrypt.compareSync(password, user.password);
 
-        const payload ={
-          id: user._id,
-          email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          type: user.type,
+        if (!isMatch) {
+            return res.status(401).json({ message: "Invalid password" });
+        }
+
+        // Create payload for JWT
+        const payload = {
+            id: user._id,
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            type: user.type,
         };
 
-        // sign in token 
+        // Sign the token
         const token = Jwt.sign(payload, "secret", { expiresIn: "1h" });
 
         res.json({
-          message: "user found",
-          user : user,
-          token : token
-        })
-      }
-    }
-   )
-   
+            message: "User logged in successfully",
+            user: user,
+            token: token,
+        });
+    }).catch(err => {
+        res.status(500).json({ message: "Login failed", error: err.message });
+    });
 }
