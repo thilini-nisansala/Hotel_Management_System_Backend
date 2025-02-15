@@ -22,7 +22,7 @@ app.use((req,res,next)=>{
         if(err){
             req.user = decoded       
             next()
-        }else{
+        }else{   
             next()
         }
         })
