@@ -2,8 +2,10 @@
 import Category from "../models/category.js"
 import { isAdminValid } from "./userControllers.js"
 
+
 export function createCategory(req,res){
 
+    
   if(req.user == null){res.status(401).json({message : "Unauthorized"})
     return
   }
