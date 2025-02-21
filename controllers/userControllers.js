@@ -9,6 +9,13 @@ export function isAdminValid(req) {
     return req.user && req.user.type === "admin";
 }
 
+//customer valid
+export function isCustomerValid(req) {
+    // Your validation logic
+    return req.user && req.user.type === "customer";
+}
+
+
 // Get Users
 export function getUsers(req, res) {
     User.find().then(usersList => {

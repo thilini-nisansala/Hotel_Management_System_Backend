@@ -41,8 +41,9 @@ export function getRooms(req, res) {
 
 // Get room by ID (public)
 export function getRoomById(req, res) {
-    const { id } = req.params;
-    Room.findById(id)
+    const { roomId } = req.params;
+
+    Room.findOne({ roomId: parseInt(roomId) }) // Search by roomId, not _id
         .then((room) => {
             if (!room) {
                 return res.status(404).json({ message: "Room not found" });
@@ -56,6 +57,7 @@ export function getRoomById(req, res) {
             });
         });
 }
+
 
 // Get rooms by category (public)
 export function getRoomsByCategory(req, res) {
@@ -77,7 +79,7 @@ export function getRoomsByCategory(req, res) {
 
 
 
-// Update a room by ID (admin-only)
+// Update a room by roomId (admin-only)
 export function updateRoom(req, res) {
     if (!req.user) {
         return res.status(401).json({ message: "Unauthorized" });
@@ -86,8 +88,12 @@ export function updateRoom(req, res) {
         return res.status(403).json({ message: "Forbidden" });
     }
 
-    const { id } = req.params;
-    Room.findByIdAndUpdate(id, req.body, { new: true })
+    const { roomId } = req.params;
+
+    // Ensure roomId is parsed as a number
+    const parsedRoomId = parseInt(roomId);
+
+    Room.findOneAndUpdate({ roomId: parsedRoomId }, req.body, { new: true })
         .then((updatedRoom) => {
             if (!updatedRoom) {
                 return res.status(404).json({ message: "Room not found" });
@@ -105,7 +111,7 @@ export function updateRoom(req, res) {
         });
 }
 
-// Delete a room by ID (admin-only)
+// Delete a room by roomId (admin-only)
 export function deleteRoom(req, res) {
     if (!req.user) {
         return res.status(401).json({ message: "Unauthorized" });
@@ -114,8 +120,12 @@ export function deleteRoom(req, res) {
         return res.status(403).json({ message: "Forbidden" });
     }
 
-    const { id } = req.params;
-    Room.findByIdAndDelete(id)
+    const { roomId } = req.params;
+
+    // Ensure roomId is parsed as a number
+    const parsedRoomId = parseInt(roomId);
+
+    Room.findOneAndDelete({ roomId: parsedRoomId })
         .then((deletedRoom) => {
             if (!deletedRoom) {
                 return res.status(404).json({ message: "Room not found" });

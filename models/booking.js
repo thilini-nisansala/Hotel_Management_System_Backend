@@ -1,4 +1,4 @@
-/*import mongoose from "mongoose";
+import mongoose from "mongoose";
 //autoGenerateId, email, status (“pending”|”confirmed”|”cancelled”), reason(“”) , start, end, roomId
 
 const bookingSchema = new mongoose.Schema({
@@ -28,6 +28,7 @@ const bookingSchema = new mongoose.Schema({
   start:{
     type: Date,
     required: true
+   // default: Date.now
   },
   end:{
     type: Date,
@@ -46,4 +47,4 @@ const bookingSchema = new mongoose.Schema({
 const Booking = mongoose.model("Bookings",bookingSchema)
 
 
-export default Booking;*/
+export default Booking;
