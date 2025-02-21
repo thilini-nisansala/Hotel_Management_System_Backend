@@ -4,7 +4,7 @@ const categoryRouter = express. Router();
 
 categoryRouter.post("/", createCategory)
 
-categoryRouter.delete("/:name",deleteCategory)
+categoryRouter.delete("/:name",deleteCategory)// as a ID can post,delete,get value
 
 categoryRouter.get("/:name",getCategoryByName)
 

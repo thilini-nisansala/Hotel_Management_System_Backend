@@ -57,6 +57,26 @@ export function getRoomById(req, res) {
         });
 }
 
+// Get rooms by category (public)
+export function getRoomsByCategory(req, res) {
+    const { category } = req.params;
+    Room.find({ category })
+        .then((rooms) => {
+            if (rooms.length === 0) {
+                return res.status(404).json({ message: "No rooms found for this category" });
+            }
+            res.json({ rooms });
+        })
+        .catch((err) => {
+            res.status(500).json({
+                message: "Failed to get rooms by category",
+                error: err.message
+            });
+        });
+}
+
+
+
 // Update a room by ID (admin-only)
 export function updateRoom(req, res) {
     if (!req.user) {
